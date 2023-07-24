@@ -14,6 +14,7 @@
   <link href="gwdgesture_style.css" rel="stylesheet" data-version="7" data-exports-type="gwd-gesture">
   <link href="gwdimageeffect_style.css" rel="stylesheet" data-version="5" data-exports-type="gwd-image-effect">
   <link href="gwdtaparea_style.css" rel="stylesheet" data-version="7" data-exports-type="gwd-taparea">
+  <title>Board_Game</title>
   <link href="300x600_motion_paths.css" rel="stylesheet" data-gwd-motion-path-style-sheet="">
   <style id="gwd-lightbox-style">
     .gwd-lightbox {
@@ -21,8 +22,37 @@
       /* This will hide the default mouse cursor */
       overflow: hidden;
     }
+    <style> body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(20, 1fr);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #cell {
+      border: 1px solid #ccc;
+      position: relative;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: default;
+    }
+    #cell:hover {
+      background-color: rgba(255, 0, 0, 0.5);
+    }
+  
   </style>
-  <style></style>
   <style id="gwd-text-style">
     p {
       margin: 0px;
@@ -1684,10 +1714,9 @@
     document.addEventListener("unload", gwd.actions.events.deregisterEventHandlers);
   </script>
   <script data-source="main.js" data-version="4" data-exports-type="adl-adlib" src="main.js"></script>
-  <script data-source="bttrads-interaction-tracker.js" data-version="0.3" data-exports-type="bttrads-interaction-tracker" src="bttrads-interaction-tracker.js"></script>
   <style>
     body {
-      cursor: url("assets/cursor.svg") 20 20, auto;
+      cursor: url("assets/cursor.svg") 30 30, auto;
     }
   </style>
   <script type="text/javascript" src="motionpath_runtime.min.1.0.js" gwd-motionpath-version="1.0"></script>
@@ -1710,7 +1739,7 @@
     </div>
   </template>
   <style>
-    .custom-cursor {
+    #custom-cursor {
       display: none;
       width: 32px;
       height: 32px;
@@ -1720,7 +1749,48 @@
       /* Prevent cursor from interfering with underlying elements */
     }
   </style>
+  
   <gwd-google-ad id="gwd-ad" polite-load="">
+    <div id="page1_3">
+      <div class="grid" id="grid">
+        <!-- Generate grid cells using JavaScript -->
+      </div>
+
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const grid = document.getElementById("grid");
+        const cells = [];
+        const winCells = [62, 63, 64, 65, 66, 67, 81, 82, 83, 84, 85, 86, 87, 88, 95, 103, 104, 105, 114, 115, 143, 144, 145, 146, 153, 154, 155, 156, 163, 164, 165, 166];
+        let hoveredWinCells = new Set();
+
+        // Create grid cells
+        for (let row = 0; row < 20; row++) {
+          for (let col = 0; col < 10; col++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.textContent = (row * 10 + col).toString(); // Add the number to the cell
+            grid.appendChild(cell);
+            cells.push(cell);
+
+            cell.addEventListener("mouseenter", () => {
+              const index = row * 10 + col;
+              if (winCells.includes(index)) {
+                hoveredWinCells.add(index);
+
+                if (hoveredWinCells.size === winCells.length) {
+                  showWinMessage();
+                }
+              }
+            });
+          }
+        }
+
+        function showWinMessage() {
+          console.log("You Win!");
+        }
+      });
+    </script>
     <gwd-metric-configuration>
       <gwd-metric-event source="start-game" event="tapareaexit" metric="" exit="Exit"></gwd-metric-event>
       <gwd-metric-event source="tap-start" event="tapareaexit" metric="" exit="Exit"></gwd-metric-event>
@@ -1752,7 +1822,6 @@
           <gwd-taparea id="tap-start" class="gwd-taparea-1402"></gwd-taparea>
           <adl-adlib id="adl-adlib_1" class="gwd-adl-adlib-dy2e"></adl-adlib>
           <div class="gwd-animation-event event-2-animation" data-event-name="event-2" data-event-time="11000"></div>
-          <bttrads-interaction-tracker id="bttrads-interaction-tracker_1" report-key="CampaignName-202212" hover-duration-s="1.5" class="gwd-bttrads-interaction-tracker-1con"></bttrads-interaction-tracker>
         </div>
       </gwd-page>
       <gwd-page id="page1_3" class="gwd-page-wrapper gwd-page-size gwd-lightbox" data-gwd-width="300px" data-gwd-height="600px" data-gwd-name="game" data-gwd-animation-labels="play-game,0">
@@ -1779,7 +1848,7 @@
             <gwd-image id="GO" source="assets/GO_1.svg" scaling="stretch" class="gwd-image-1dkp gwd-gen-16abgwdanimation"></gwd-image>
           </div>
           <gwd-image-effect id="gwd-image-effect_2" time-limit="30" class="gwd-image-effect-muye gwd-gen-j2uwgwdanimation" images=",assets/Background2_7.png" scaling="cover">
-            <gwd-reveal track-mouse="" xradius="40" yradius="40" clear-revealed="" autoplay="none" speed="3" feathering="80"></gwd-reveal>
+            <gwd-reveal track-mouse="" xradius="30" yradius="30" clear-revealed="" autoplay="none" speed="3" feathering="80"></gwd-reveal>
           </gwd-image-effect>
           <div class="gwd-div-1cwk" data-gwd-group="lower_section-3" id="lower_section-3_1"></div>
           <div class="gwd-div-upq6" id="_test-win-button">
@@ -1832,28 +1901,7 @@
   <script type="text/javascript" id="gwd-init-code">
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // JavaScript to handle mouse events
-    document.addEventListener('DOMContentLoaded', () => {
-      const container = document.querySelector('.container');
-      const customCursor = document.querySelector('.custom-cursor');
-
-      container.addEventListener('mouseenter', () => {
-        customCursor.style.display = 'block';
-      });
-
-      container.addEventListener('mouseleave', () => {
-        customCursor.style.display = 'none';
-      });
-
-      container.addEventListener('mousemove', (e) => {
-        // Update the custom cursor position to follow the mouse
-        customCursor.style.left = `${e.clientX - 16}px`;
-        customCursor.style.top = `${e.clientY - 16}px`;
-      });
-    });
-
-
-
+    
     (function() {
       var gwdAd = document.getElementById('gwd-ad');
 
